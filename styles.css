@@ -1030,6 +1030,39 @@ header p {
     border-left: 4px solid var(--primary-color);
 }
 
+/* Toggle Headers */
+.toggle-header {
+    cursor: pointer;
+    user-select: none;
+    transition: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 16px;
+}
+
+.toggle-header:hover {
+    color: var(--primary-light);
+}
+
+.toggle-arrow {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: none;
+}
+
+.insights-section h4,
+.topic-list h4 {
+    margin-bottom: 0;
+}
+
+.topics-content {
+    margin-top: 16px;
+}
+
 .error-message {
     background-color: #fef2f2;
     border: 1px solid #fca5a5;

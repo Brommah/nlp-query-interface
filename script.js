@@ -1594,10 +1594,13 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
         }
 
         if (results.insights && results.insights.length > 0) {
+            const insightsId = `insights-${Math.random().toString(36).substr(2, 9)}`;
             html += `
                 <div class="insights-section">
-                    <h4>💡 Key Insights</h4>
-                    <ul class="insights-list">
+                    <h4 class="toggle-header" onclick="toggleSection('${insightsId}')">
+                        💡 Key Insights <span class="toggle-arrow">▼</span>
+                    </h4>
+                    <ul class="insights-list" id="${insightsId}">
                         ${results.insights.map(insight => `<li>${insight}</li>`).join('')}
                     </ul>
                 </div>
@@ -1605,23 +1608,28 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
         }
 
         if (results.data && results.data.topics && results.data.topics.length > 0) {
+            const topicsId = `topics-${Math.random().toString(36).substr(2, 9)}`;
             html += `
                 <div class="topic-list">
-                    <h4>📋 Topics Analysis</h4>
-                    ${results.data.topics.slice(0, 5).map(topic => `
-                        <div class="topic-item">
-                            <div class="topic-header">
-                                <span class="topic-name">${topic.name}</span>
-                                <span class="topic-stats">${topic.messageCount} messages, ${topic.contributorCount} contributors</span>
+                    <h4 class="toggle-header" onclick="toggleSection('${topicsId}')">
+                        📋 Topics Analysis <span class="toggle-arrow">▼</span>
+                    </h4>
+                    <div class="topics-content" id="${topicsId}">
+                        ${results.data.topics.slice(0, 5).map(topic => `
+                            <div class="topic-item">
+                                <div class="topic-header">
+                                    <span class="topic-name">${topic.name}</span>
+                                    <span class="topic-stats">${topic.messageCount} messages, ${topic.contributorCount} contributors</span>
+                                </div>
+                                <div class="contributors">
+                                    ${topic.contributors.slice(0, 3).map(contributor => 
+                                        `<span class="contributor">${contributor.username} (${contributor.messageCount})</span>`
+                                    ).join('')}
+                                    ${topic.contributors.length > 3 ? `<span class="contributor">+${topic.contributors.length - 3} more</span>` : ''}
+                                </div>
                             </div>
-                            <div class="contributors">
-                                ${topic.contributors.slice(0, 3).map(contributor => 
-                                    `<span class="contributor">${contributor.username} (${contributor.messageCount})</span>`
-                                ).join('')}
-                                ${topic.contributors.length > 3 ? `<span class="contributor">+${topic.contributors.length - 3} more</span>` : ''}
-                            </div>
-                        </div>
-                    `).join('')}
+                        `).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -1799,6 +1807,20 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
         
         // Reset stepper
         this.updateStepperState();
+    }
+}
+
+// Global toggle function for collapsible sections
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const arrow = document.querySelector(`[onclick="toggleSection('${sectionId}')"] .toggle-arrow`);
+    
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        arrow.textContent = '▼';
+    } else {
+        section.style.display = 'none';
+        arrow.textContent = '▶';
     }
 }
 

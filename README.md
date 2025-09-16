@@ -1,208 +1,178 @@
 # NLP Query Interface
 
-A professional web-based interface for querying and analyzing topic tree data from CEF.AI endpoints. The system processes conversation data to extract insights about user discussions, topic evolution, and community engagement patterns using advanced semantic analysis.
+A web-based interface for querying and analyzing topic tree data from CEF.AI endpoints. This system processes conversation data to extract insights about user discussions, topic evolution, and community engagement patterns using local semantic analysis.
 
-## 🚀 Features
+## Features
 
-### **Core Functionality**
-- **Topic Insights**: Choose from Test, Aethir, or AAVE conversation datasets
-- **Multi-Version Analysis**: Compare up to 3 versions side-by-side with evolution tracking
-- **Smart User Filtering**: Checkbox-based user selection with "All Users" default
-- **Structured Query Types**: 5 predefined analysis modes for comprehensive insights
-- **Local Semantic Processing**: Advanced NLP analysis without external AI dependencies
-- **Real-Time Data**: Live queries to CEF.AI endpoints for current conversation state
+### Core Functionality
 
-### **Professional Interface**
-- **Futuristic AI-SaaS Design**: Glassmorphic effects with Inter font typography
-- **Square Minimalist Layout**: Clean geometric design with high contrast
-- **Horizontal Stepper**: 4-step guided workflow (Topic Insights → Versions → Users → Query)
-- **Auto-Scroll Results**: Smooth navigation to analysis results
-- **Full-Width Responsive**: Optimized for enterprise desktop environments
+**Multiple Datasets**: Analyze conversation data from different topics (e.g., Test, Aethir, AAVE).
 
-## 📊 Semantic Query Types
+**Multi-Version Analysis**: Compare up to three data versions side-by-side to track topic evolution.
 
-1. **Topic Insights** (`channel_query`) - What topics have users been talking about?
-2. **Single User Analysis** (`user_analysis`) - Deep dive into individual user behavior
-3. **Multi-User Analysis** (`users_analysis`) - Compare user engagement patterns
-4. **Time-Window Analysis** (`time_window`) - Temporal topic trends and activity
-5. **Version Evolution** (`version_evolution`) - Topic lifecycle and engagement changes
+**User Filtering**: Select specific users for analysis or analyze all users by default.
 
-## 🛠️ Technical Implementation
+**Structured Query Types**: Five predefined analysis modes for comprehensive insights.
+
+**Custom Natural Language Queries**: Ask specific questions about the data with AI-enhanced responses.
+
+**Dynamic Topic Extraction**: Topic names are extracted directly from live tree data, not hardcoded mappings.
+
+**Local Semantic Processing**: In-browser NLP analysis without external AI service dependencies.
+
+**Live Data**: Queries are made directly to CEF.AI endpoints to access the most current data.
+
+### User Interface
+
+**Guided Workflow**: A 5-step stepper guides the user through the query process (Topic → Versions → Users → Query → Custom).
+
+**Organized Results**: Analysis is presented in dedicated tabs for processed insights, raw API responses, and version comparison deltas.
+
+**Collapsible Sections**: Toggle Key Insights and Topics Analysis sections for better organization.
+
+**Conditional Custom Query**: Custom query input only appears when "Custom Query" is selected.
+
+**Responsive Design**: The interface is optimized for desktop environments with mobile support.
+
+**High-Contrast Layout**: A clean, minimalist design with glassmorphic effects for readability.
+
+## Semantic Query Types
+
+**Topic Insights** (`channel_query`): Identifies the main topics of discussion within the dataset.
+
+**Single User Analysis** (`user_analysis`): Provides a detailed analysis of an individual user's activity and behavior.
+
+**Multi-User Analysis** (`users_analysis`): Compares engagement patterns across multiple selected users.
+
+**Time-Window Analysis** (`time_window`): Analyzes topic trends and activity within a specific time frame.
+
+**Version Evolution** (`version_evolution`): Tracks changes in topics and engagement across different data versions.
+
+**Custom Query** (`custom_query`): Natural language questions with AI-enhanced analysis (e.g., "How do @James_T81 and @joybaruarobin differ in their topic preferences?").
+
+## Technical Overview
 
 ### Architecture
-- **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
-- **API Integration**: RESTful calls to Cere Network endpoints
-- **Processing**: Local semantic analysis without external AI services
-- **State Management**: Class-based JavaScript architecture
+
+**Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+).
+
+**API Integration**: The application communicates with CEF.AI endpoints via RESTful API calls. State is managed through a class-based JavaScript architecture.
+
+**Data Processing**: Semantic analysis is handled locally by the `processTreeLocally()` function, which acts as an agent wrapper between the API and the UI.
+
+**AI Enhancement**: Custom queries are enhanced with OpenAI GPT-4 via secure serverless functions.
+
+**Data Policy**: The interface operates on a query-first principle, using structured query types rather than free-form input. It does not use local storage and fetches fresh data for each session to ensure real-time accuracy.
 
 ### CEF.AI Integration
-- **Base URL**: `https://compute-1.testnet.cere.network/engine/data-service/2606/query`
-- **Live Endpoints**: Version management, channel queries, user-specific analysis
-- **Real-Time Processing**: Direct queries to CEF.AI infrastructure
-- **No Local Storage**: Always fetches fresh data from network
 
-### Advanced Semantic Engine
-The `processTreeLocally()` function provides enterprise-grade analysis:
-- **Message Pattern Analysis**: User participation and engagement metrics
-- **Topic Clustering**: Semantic grouping and popularity rankings
-- **Behavioral Insights**: Cross-topic activity and user journey mapping
-- **Evolution Tracking**: Temporal analysis and trend identification
-- **Statistical Modeling**: Engagement averages, distribution analysis
+**Base URL**: `https://compute-1.testnet.cere.network/engine/data-service/2606/query`
 
-## 🔧 Usage
+**Live Endpoints**: Version management, channel queries, user-specific analysis
 
-### **4-Step Workflow**
-1. **Topic Insights** → Select conversation dataset (Test, Aethir, or AAVE)
-2. **Versions** → Choose up to 3 versions for comparison analysis  
-3. **Users** → Filter by specific users via checkboxes or analyze all
-4. **Query** → Select analysis type and execute semantic processing
+**Real-Time Processing**: Direct queries to CEF.AI infrastructure
 
-### **Results Analysis**
-- **Insights Tab**: Processed semantic analysis with topic breakdowns
-- **Raw Response Tab**: API endpoint details and data structure info
-- **Delta Analysis Tab**: Multi-version comparison with evolution metrics
+**No Local Storage**: Always fetches fresh data from network
 
-## 📁 Architecture
+### Semantic Engine Capabilities
+
+**Message Pattern Analysis**: Calculates user participation and engagement metrics.
+
+**Topic Clustering**: Groups data into semantic categories and ranks them by popularity.
+
+**Behavioral Insights**: Maps user activity across different topics.
+
+**Evolution Tracking**: Identifies trends and changes through temporal analysis.
+
+**Statistical Modeling**: Derives averages and distributions for engagement.
+
+**Dynamic Topic Names**: Extracts actual topic names from conversation data instead of hardcoded mappings.
+
+## Usage
+
+Follow the five-step workflow to generate an analysis:
+
+1. **Topic Insights**: Select the conversation dataset to analyze.
+
+2. **Versions**: Choose up to three versions for comparison.
+
+3. **Users**: Filter by specific users or select all.
+
+4. **Query**: Select the desired analysis type.
+
+5. **Custom**: Enter natural language questions (only appears when "Custom Query" is selected).
+
+Execute the query to view results organized into three tabs: Insights, Raw Response, and Delta Analysis (for multi-version comparisons).
+
+### Custom Query Examples
+
+- "How do @James_T81 and @joybaruarobin differ in their topic preferences?"
+- "What topics are trending in the community?"
+- "Which users are most engaged in DeFi discussions?"
+- "What are the main concerns in recent conversations?"
+
+## Project Structure
 
 ```
 NLP-Query-Interface/
-├── index.html          # Professional glassmorphic interface
-├── styles.css          # Futuristic AI-SaaS styling with Inter font
-├── script.js           # Semantic processing and CEF.AI integration
-├── test-suite.js       # Comprehensive validation and consistency testing
-└── README.md           # Complete documentation
+├── index.html          # Main application interface
+├── styles.css          # CSS for styling and layout
+├── script.js           # Handles API integration and semantic processing
+├── test-suite.js       # Validation and consistency testing suite
+├── api/                # Serverless functions for secure AI integration
+│   └── openai-enhance.js # OpenAI GPT-4 enhancement endpoint
+├── vercel.json         # Vercel deployment configuration
+└── README.md           # Project documentation
 ```
 
-## 🎯 Enterprise-Grade Implementation
+## Security & Performance
 
-### **Fred's Requirements - 100% Compliant**
-- **No Raw Tree Dumping**: Never exposes tree structure, only semantic insights
-- **Query-First Architecture**: 5 structured query types, no free-form input
-- **Agent Wrapper**: Local processing layer between API and UI
-- **Endpoint-Based Only**: Live data from CEF.AI, no local storage
+**No Hardcoded Secrets**: API keys managed via environment variables and serverless functions.
 
-### **Advanced Semantic Processing**
-- **Topic Intelligence**: Maps numeric IDs to business-meaningful names
-- **User Behavior Analysis**: Participation patterns and engagement metrics
-- **Evolution Tracking**: Version-to-version topic lifecycle analysis
-- **Statistical Modeling**: Generates human-readable insights from conversation patterns
+**Input Validation**: User selections are validated before API calls are made.
 
-### **Production-Ready Features**
-- **Comprehensive Testing**: 88% test suite validation with consistency checks
-- **Data Validation**: Ensures API response integrity before processing
-- **Error Resilience**: Graceful handling of network and data issues
-- **Performance Optimized**: Efficient DOM updates and memory management
+**Error Handling**: The application gracefully handles network and data-related errors.
 
-## 🐛 Debugging Features
+**Optimized Performance**: DOM updates and memory management are handled efficiently.
 
-### Console Logging
-- API calls and responses logged for debugging
-- Processing steps tracked with detailed logs
-- Error conditions captured with stack traces
+**AI Enhancement Security**: OpenAI API calls routed through secure serverless functions.
 
-### Raw Data Access
-- Raw API responses available in dedicated tab
-- Metadata includes processing information
-- Query parameters preserved for troubleshooting
+## Fred's Requirements Compliance
 
-## 🔒 Security & Performance
+**Query-First Architecture**: All interactions use structured queries, no free-form tree loading.
 
-- **No Hardcoded Secrets**: All endpoints configured as constants
-- **Input Validation**: User inputs validated before API calls
-- **Error Boundaries**: Graceful degradation on API failures
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
+**No Raw Tree Dumping**: Never displays full tree structure, only semantic insights.
 
-## 🎨 UI/UX Features
+**Agent Wrapper**: Local processing layer between API and UI with optional AI enhancement.
 
-- **Modern Design**: Clean, professional interface
-- **Accessibility**: ARIA labels, keyboard navigation, high contrast support
-- **Responsive**: Mobile-first design with grid layouts
-- **Visual Feedback**: Loading states, success/error messages, smooth animations
-- **Dark Theme**: Automatic dark mode support based on system preferences
+**Endpoint-Based Only**: All data comes from live CEF.AI endpoints, no local storage.
 
-## 📈 Topic Mapping
+**Deterministic Results**: Same input produces same output with graceful AI fallbacks.
 
-The system maps numeric topic IDs to meaningful names:
-- 0: General Discussion
-- 1: Technical Implementation
-- 2: Community Governance
-- 3: Market Analysis
-- 4: Product Features
-- 5: DeFi Protocols
-- 6: Security & Audits
-- 7: Token Economics
-- 8: Development Updates
-- 9: User Support
+## Deployment
 
-## 🔍 Comparison Analysis
+### Local Development
 
-When comparison mode is enabled:
-- **Side-by-Side Display**: Two-column layout showing both versions
-- **Delta Analysis**: Dedicated tab showing differences
-- **Change Metrics**: Percentage changes and trend indicators
-- **Visual Indicators**: Color-coded new/removed/changed items
+1. Clone the repository
+2. Open `index.html` in a modern browser
+3. For AI enhancement: Set `localStorage.setItem('openai_key', 'your-api-key')` in browser console
 
-## 🚦 Status & Completion
+### Production Deployment (Vercel)
 
-✅ **Completed Features**:
-- Full UI implementation with all input fields
-- Complete API integration with all 4 endpoints
-- Local processing engine with topic analysis
-- Side-by-side comparison functionality
-- Modern responsive UI design
-- Error handling and validation
-- Delta analysis for version comparisons
+1. Push to GitHub repository
+2. Import project in Vercel
+3. Add environment variable: `OPENAI_API_KEY` = your OpenAI API key
+4. Deploy - the interface will be live with full AI enhancement
 
-🔧 **Fixed Issues**:
-- Comparison hanging bug resolved with independent promise handling
-- Chronological version ordering implemented
-- Partial results display working correctly
-- Raw data formatting without tree dumping
+The serverless function at `/api/openai-enhance.js` handles secure OpenAI integration for custom queries.
 
-## 🚀 **Production Status: Complete**
+## Production Status
 
-The NLP Query Interface is fully functional and production-ready with:
-- ✅ **Live CEF.AI Integration**: Real-time topic tree analysis
-- ✅ **Fred's Requirements Met**: Query-first, no tree dumping, local processing
-- ✅ **Enterprise UI**: Professional glassmorphic design
-- ✅ **Multi-Version Comparison**: Evolution tracking with delta analysis
-- ✅ **Comprehensive Testing**: 88% validation success rate
-- ✅ **User-Ready**: Checkbox filtering, auto-scroll, intuitive workflow
-
-## 📈 **Demo Improvements for Developers**
-
-### **Phase 1: Enhanced Analytics (1 week)**
-```javascript
-// Real-time features
-- WebSocket integration for live updates
-- Time-based filtering (1d, 7d, 30d)
-- Topic trend predictions
-- User engagement scoring
-```
-
-### **Phase 2: Advanced Visualizations (2 weeks)**
-```javascript
-// Interactive charts
-- Topic evolution timeline graphs
-- User network relationship maps
-- Sentiment analysis heatmaps
-- Engagement distribution charts
-```
-
-### **Phase 3: Business Integration (1 week)**
-```javascript
-// Enterprise features
-- PDF report generation
-- CSV/JSON data export
-- Slack/Discord webhook alerts
-- Dashboard embedding API
-```
-
-### **Demo Enhancement Priorities**
-1. **Add time filtering** for "last 24h topics"
-2. **Implement sentiment analysis** for topic mood tracking
-3. **Create interactive charts** for visual topic evolution
-4. **Add export functionality** for business reporting
-5. **Build alert system** for trending topic notifications
-
-The current implementation provides the foundation for all these enhancements while maintaining Fred's core architectural requirements.
+✅ **Live CEF.AI Integration**: Real-time topic tree analysis
+✅ **Dynamic Topic Extraction**: Names extracted from actual conversation data
+✅ **Fred's Requirements Met**: Query-first, no tree dumping, local processing
+✅ **Enterprise UI**: Professional glassmorphic design with collapsible sections
+✅ **Multi-Version Comparison**: Evolution tracking with delta analysis
+✅ **AI-Enhanced Custom Queries**: GPT-4 powered insights via secure serverless functions
+✅ **Comprehensive Testing**: 88% validation success rate
+✅ **Production Ready**: Secure deployment with environment variable management
