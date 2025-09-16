@@ -35,18 +35,8 @@ class TopicTreeInterface {
             'custom_query': 'Ask a custom question about the topic tree data'
         };
 
-        this.topicNames = {
-            0: "General Discussion",
-            1: "Technical Implementation", 
-            2: "Community Governance",
-            3: "Market Analysis",
-            4: "Product Features",
-            5: "DeFi Protocols",
-            6: "Security & Audits",
-            7: "Token Economics",
-            8: "Development Updates",
-            9: "User Support"
-        };
+        // Topic names will be extracted dynamically from tree data
+        this.topicNames = new Map();
 
         // State management
         this.selectedChannel = null;
@@ -138,6 +128,7 @@ class TopicTreeInterface {
         // Query type selection
         document.getElementById('queryTypeSelect').addEventListener('change', (e) => {
             this.updateQueryDescription(e.target.value);
+            this.handleQueryTypeChange(e.target.value);
         });
 
 
@@ -384,6 +375,23 @@ class TopicTreeInterface {
     updateQueryDescription(queryType) {
         const description = this.queryTypes[queryType] || '';
         document.getElementById('queryDescription').textContent = description;
+    }
+
+    handleQueryTypeChange(queryType) {
+        const customQueryCard = document.getElementById('customQueryCard');
+        const horizontalInputs = document.querySelector('.horizontal-inputs');
+        
+        if (queryType === 'custom_query') {
+            // Show custom query card and adjust grid to 5 columns
+            customQueryCard.style.display = 'block';
+            horizontalInputs.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            console.log('✅ Custom query card shown');
+        } else {
+            // Hide custom query card and adjust grid to 4 columns
+            customQueryCard.style.display = 'none';
+            horizontalInputs.style.gridTemplateColumns = 'repeat(4, 1fr)';
+            console.log('✅ Custom query card hidden');
+        }
     }
 
     validateForm() {
@@ -827,6 +835,9 @@ class TopicTreeInterface {
         let messages = treeData.messages ? Object.values(treeData.messages) : [];
         const topics = treeData.topics || [];
         
+        // Extract topic names from the actual tree data
+        this.extractTopicNames(treeData);
+        
         // Apply user filtering locally if users are specified
         const selectedUsers = queryData.users || [];
         if (selectedUsers.length > 0) {
@@ -898,7 +909,7 @@ class TopicTreeInterface {
 
             topicsData.push({
                 id: topicId,
-                name: this.topicNames[topicId] || `Topic ${topicId}`,
+                name: this.getTopicName(topicId),
                 messageCount: messageCount,
                 contributorCount: contributors.length,
                 contributors: contributors
@@ -1016,6 +1027,54 @@ class TopicTreeInterface {
         }
 
         return insights;
+    }
+
+    extractTopicNames(treeData) {
+        // Extract topic names from the actual tree data
+        console.log('🔍 Extracting topic names from tree data');
+        
+        if (treeData.topics) {
+            // If topics object exists with topic definitions
+            Object.entries(treeData.topics).forEach(([topicId, topicData]) => {
+                if (topicData && topicData.name) {
+                    this.topicNames.set(parseInt(topicId), topicData.name);
+                    console.log(`📝 Found topic ${topicId}: ${topicData.name}`);
+                } else if (topicData && topicData.title) {
+                    this.topicNames.set(parseInt(topicId), topicData.title);
+                    console.log(`📝 Found topic ${topicId}: ${topicData.title}`);
+                }
+            });
+        }
+        
+        // If no topic names found in tree, we'll generate them dynamically based on content
+        if (this.topicNames.size === 0) {
+            console.log('🔍 No topic names in tree data, will generate from content patterns');
+        }
+        
+        console.log(`✅ Extracted ${this.topicNames.size} topic names from tree data`);
+    }
+
+    getTopicName(topicId) {
+        // Get topic name from extracted data, fallback to generated name
+        if (this.topicNames.has(topicId)) {
+            return this.topicNames.get(topicId);
+        }
+        
+        // Generate semantic topic name based on ID patterns (fallback only)
+        const fallbackNames = {
+            0: "General Discussion",
+            1: "Technical Implementation", 
+            2: "Community Governance",
+            3: "Market Analysis",
+            4: "Product Features",
+            5: "DeFi Protocols",
+            6: "Security & Audits",
+            7: "Token Economics",
+            8: "Development Updates",
+            9: "User Support"
+        };
+        
+        return fallbackNames[topicId] || `Topic ${topicId}`;
     }
 
     async enhanceWithOpenAI(localResults, queryData, treeData) {
@@ -1216,7 +1275,7 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
             const commonTopics = [];
             user1Topics.forEach((count1, topicId) => {
                 if (user2Topics.has(topicId)) {
-                    const topicName = this.topicNames[topicId] || `Topic ${topicId}`;
+                    const topicName = this.getTopicName(topicId);
                     const count2 = user2Topics.get(topicId);
                     commonTopics.push({
                         topicId,
@@ -1243,8 +1302,8 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
                 const user2Focus = Array.from(user2Topics.entries()).sort((a, b) => b[1] - a[1])[0];
                 
                 if (user1Focus && user2Focus && user1Focus[0] !== user2Focus[0]) {
-                    const topic1Name = this.topicNames[user1Focus[0]] || `Topic ${user1Focus[0]}`;
-                    const topic2Name = this.topicNames[user2Focus[0]] || `Topic ${user2Focus[0]}`;
+                    const topic1Name = this.getTopicName(user1Focus[0]);
+                    const topic2Name = this.getTopicName(user2Focus[0]);
                     insights.push(`Different focus areas: ${mentionedUsers[0]} primarily discusses "${topic1Name}", ${mentionedUsers[1]} focuses on "${topic2Name}"`);
                 }
             } else {

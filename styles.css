@@ -221,10 +221,11 @@ header p {
 /* Futuristic Square Input Cards */
 .horizontal-inputs {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     margin-bottom: 40px;
     width: 100%;
+    transition: grid-template-columns 0.3s ease;
 }
 
 .input-card {
