@@ -6,7 +6,9 @@
 class TopicTreeInterface {
     constructor() {
         this.baseUrl = 'https://compute-1.testnet.cere.network/engine/data-service/2606/query';
-        this.openaiApiKey = this.getOpenAIKey();
+        
+        // Initialize OpenAI configuration
+        this.openaiApiKey = this.initializeOpenAI();
         this.openaiEnabled = !!this.openaiApiKey;
         this.datasets = {
             '2148778849': {
@@ -47,6 +49,19 @@ class TopicTreeInterface {
 
         this.initializeEventListeners();
         this.initializeStepper();
+    }
+
+    initializeOpenAI() {
+        // Try to get from localStorage first (for development)
+        const storedKey = localStorage.getItem('openai_key');
+        if (storedKey) {
+            console.log('🤖 OpenAI key loaded from localStorage');
+            return storedKey;
+        }
+        
+        // For production deployment, this should be set via environment variables
+        console.log('⚠️ No OpenAI key found - custom queries will use local processing only');
+        return null;
     }
 
     initializeStepper() {
