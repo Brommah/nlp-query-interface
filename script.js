@@ -52,16 +52,9 @@ class TopicTreeInterface {
     }
 
     initializeOpenAI() {
-        // Try to get from localStorage first (for development)
-        const storedKey = localStorage.getItem('openai_key');
-        if (storedKey) {
-            console.log('🤖 OpenAI key loaded from localStorage');
-            return storedKey;
-        }
-        
-        // For production deployment, this should be set via environment variables
-        console.log('⚠️ No OpenAI key found - custom queries will use local processing only');
-        return null;
+        // OpenAI will be handled via serverless function for security
+        console.log('🤖 OpenAI enhancement available via serverless function');
+        return 'serverless'; // Indicator that we'll use the API endpoint
     }
 
     initializeStepper() {
@@ -1131,35 +1124,34 @@ Please provide a concise, business-focused analysis that directly answers the qu
 Response format: Provide a single, comprehensive paragraph (maximum 150 words) that directly answers the question.`;
 
         try {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            // Use serverless function for secure OpenAI API calls
+            const response = await fetch('/api/openai-enhance', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.openaiApiKey}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'You are a professional community intelligence analyst. Provide clear, actionable insights based on conversation data.'
-                        },
-                        {
-                            role: 'user', 
-                            content: prompt
-                        }
-                    ],
-                    max_tokens: 200,
-                    temperature: 0.3
+                    question: queryData.customQuestion,
+                    context: {
+                        messageCount: localResults.data.messageCount,
+                        topicCount: localResults.data.topicCount,
+                        activeUsers: localResults.data.activeUsers,
+                        topics: localResults.data.topics
+                    }
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`OpenAI API error: ${response.status}`);
+                throw new Error(`Serverless function error: ${response.status}`);
             }
 
             const data = await response.json();
-            const aiInsights = data.choices[0].message.content;
+            
+            if (!data.success) {
+                throw new Error(data.error || 'Unknown error');
+            }
+            
+            const aiInsights = data.insights;
             
             console.log('✅ OpenAI enhancement successful');
             
