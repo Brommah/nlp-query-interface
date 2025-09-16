@@ -180,8 +180,9 @@ class TopicTreeInterface {
             });
         });
 
-        // Initialize query description
-        this.updateQueryDescription('channel_query');
+        // Initialize query description for custom query (default)
+        this.updateQueryDescription('custom_query');
+        this.handleQueryTypeChange('custom_query'); // Show custom query card by default
     }
 
     async handleDatasetChange(channelId) {
@@ -245,11 +246,22 @@ class TopicTreeInterface {
                 // Populate version selects
                 this.populateVersionSelects();
                 
-                // Just select the latest version for Version 1 by default
-                if (this.availableVersions.length > 0) {
+                // Auto-select standard demo parameters
+                if (this.availableVersions.length >= 3) {
+                    // Select 3 versions for immediate demo
+                    this.selectedVersions[0] = this.availableVersions[0].version; // First version
+                    this.selectedVersions[1] = this.availableVersions[Math.floor(this.availableVersions.length / 2)].version; // Middle version
+                    this.selectedVersions[2] = this.availableVersions[this.availableVersions.length - 1].version; // Latest version
+                    
+                    version1Select.value = this.selectedVersions[0];
+                    version2Select.value = this.selectedVersions[1];
+                    version3Select.value = this.selectedVersions[2];
+                    
+                    console.log('📋 Auto-selected demo versions:', this.selectedVersions);
+                } else if (this.availableVersions.length > 0) {
                     this.selectedVersions[0] = this.availableVersions[this.availableVersions.length - 1].version;
                     version1Select.value = this.selectedVersions[0];
-                    console.log('📋 Auto-selected latest version:', this.selectedVersions[0]);
+                    console.log('📋 Auto-selected single version:', this.selectedVersions[0]);
                 }
                 
                 console.log('📊 Total versions available:', this.availableVersions.length);
@@ -1598,9 +1610,9 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
             html += `
                 <div class="insights-section">
                     <h4 class="toggle-header" onclick="toggleSection('${insightsId}')">
-                        💡 Key Insights <span class="toggle-arrow">▼</span>
+                        💡 Key Insights <span class="toggle-arrow">▶</span>
                     </h4>
-                    <ul class="insights-list" id="${insightsId}">
+                    <ul class="insights-list" id="${insightsId}" style="display: none;">
                         ${results.insights.map(insight => `<li>${insight}</li>`).join('')}
                     </ul>
                 </div>
@@ -1612,9 +1624,9 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
             html += `
                 <div class="topic-list">
                     <h4 class="toggle-header" onclick="toggleSection('${topicsId}')">
-                        📋 Topics Analysis <span class="toggle-arrow">▼</span>
+                        📋 Topics Analysis <span class="toggle-arrow">▶</span>
                     </h4>
-                    <div class="topics-content" id="${topicsId}">
+                    <div class="topics-content" id="${topicsId}" style="display: none;">
                         ${results.data.topics.slice(0, 5).map(topic => `
                             <div class="topic-item">
                                 <div class="topic-header">

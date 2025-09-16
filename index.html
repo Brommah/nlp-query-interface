@@ -100,7 +100,7 @@
                             <option value="users_analysis">Multi-User Analysis</option>
                             <option value="time_window">Time-Window Analysis</option>
                             <option value="version_evolution">Version Evolution</option>
-                            <option value="custom_query">Custom Query</option>
+                            <option value="custom_query" selected>Custom Query</option>
                         </select>
                         <div id="queryDescription" class="query-description-compact">
                             What topics have users been talking about?
@@ -109,7 +109,7 @@
                 </div>
 
                 <!-- Step 5: Custom Query (only shown when Custom Query is selected) -->
-                <div class="input-card" data-step="5" id="customQueryCard" style="display: none;">
+                <div class="input-card" data-step="5" id="customQueryCard">
                     <h3>🤖 Custom Query</h3>
                     <div class="form-group">
                         <textarea id="customQuery" class="form-control custom-textarea">How do @James_T81 and @joybaruarobin differ in their topic preferences?</textarea>
