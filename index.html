@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP Query Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 NLP Query Interface</h1>
+            <p>Query and analyze topic tree data from CEF.AI endpoints</p>
+        </header>
+
+        <main>
+            <!-- Horizontal Stepper -->
+            <div class="stepper-container">
+                <div class="stepper">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">TOPIC INSIGHTS</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">VERSIONS</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">USERS</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">QUERY</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="5">
+                        <div class="step-number">5</div>
+                        <div class="step-label">CUSTOM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horizontal Input Sections -->
+            <section class="horizontal-inputs">
+                <!-- Step 1: Topic Insights -->
+                <div class="input-card" data-step="1">
+                    <h3>📊 Topic Insights</h3>
+                    <div class="form-group">
+                        <select id="channelSelect" class="form-control">
+                            <option value="">-- Select Dataset --</option>
+                            <option value="2148778849">Test Dataset</option>
+                            <option value="2148778850">Aethir Dataset</option>
+                            <option value="2148778853">AAVE Dataset</option>
+                        </select>
+                        <div id="datasetInfo" class="dataset-info"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Version Selection -->
+                <div class="input-card" data-step="2">
+                    <h3>🔄 Version Selection</h3>
+                    <div class="version-selects-compact">
+                        <select id="version1Select" class="form-control compact" disabled>
+                            <option value="">-- Select Dataset First --</option>
+                        </select>
+                        <select id="version2Select" class="form-control compact" disabled>
+                            <option value="">-- No Comparison --</option>
+                        </select>
+                        <select id="version3Select" class="form-control compact" disabled>
+                            <option value="">-- No Comparison --</option>
+                        </select>
+                    </div>
+                    <div id="versionLoader" class="loader" style="display: none;">Loading...</div>
+                </div>
+
+                <!-- Step 3: User Filtering -->
+                <div class="input-card" data-step="3">
+                    <h3>👥 User Filtering</h3>
+                    <div class="form-group">
+                        <div id="userCheckboxes" class="user-checkboxes">
+                            <label class="user-checkbox">
+                                <input type="checkbox" value="" checked disabled>
+                                <span class="checkbox-label">All Users</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Query Type Selection -->
+                <div class="input-card" data-step="4">
+                    <h3>🎯 Query Type</h3>
+                    <div class="form-group">
+                        <select id="queryTypeSelect" class="form-control compact">
+                            <option value="channel_query">Topic Insights</option>
+                            <option value="user_analysis">Single User Analysis</option>
+                            <option value="users_analysis">Multi-User Analysis</option>
+                            <option value="time_window">Time-Window Analysis</option>
+                            <option value="version_evolution">Version Evolution</option>
+                            <option value="custom_query">Custom Query</option>
+                        </select>
+                        <div id="queryDescription" class="query-description-compact">
+                            What topics have users been talking about?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Custom Query -->
+                <div class="input-card" data-step="5">
+                    <h3>🤖 Custom Query</h3>
+                    <div class="form-group">
+                        <textarea id="customQuery" class="form-control custom-textarea" placeholder="Ask a natural language question about the topic tree data...
+
+Examples:
+• What topics are trending in the community?
+• Which users are most engaged in DeFi discussions?
+• How has sentiment changed between versions?
+• What are the main concerns in recent conversations?"></textarea>
+                        <div class="custom-query-info">
+                            <small class="form-text">This question will be processed against the selected versions and users</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Execute Section -->
+            <section class="execute-section">
+                <button id="executeQuery" class="btn btn-primary" disabled>
+                    🚀 Execute Query
+                </button>
+                <button id="runTests" class="btn btn-secondary">
+                    🧪 Run Test Suite
+                </button>
+                <div id="queryLoader" class="loader" style="display: none;">Processing query...</div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <h2>📋 Results</h2>
+                
+                <!-- Results Tabs -->
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="insights">Insights</button>
+                    <button class="tab-button" data-tab="raw">Raw Response</button>
+                    <button class="tab-button comparison-tab" data-tab="delta" style="display: none;">Delta Analysis</button>
+                </div>
+
+                <!-- Results Content -->
+                <div class="results-container">
+                    <!-- Single Version Results -->
+                    <div id="singleResults" class="results-content">
+                        <div class="tab-content active" data-tab="insights">
+                            <div id="insightsContent"></div>
+                        </div>
+                        <div class="tab-content" data-tab="raw">
+                            <pre id="rawContent"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Version Results -->
+                    <div id="multiVersionResults" class="multi-version-grid" style="display: none;">
+                        <!-- Version columns only show for Insights/Raw tabs -->
+                        <div class="version-column" id="version1Column">
+                            <h3 id="version1Title">Version 1</h3>
+                            <div class="tab-content active" data-tab="insights">
+                                <div id="insightsContent1"></div>
+                            </div>
+                            <div class="tab-content" data-tab="raw">
+                                <pre id="rawContent1"></pre>
+                            </div>
+                        </div>
+                        <div class="version-column" id="version2Column" style="display: none;">
+                            <h3 id="version2Title">Version 2</h3>
+                            <div class="tab-content active" data-tab="insights">
+                                <div id="insightsContent2"></div>
+                            </div>
+                            <div class="tab-content" data-tab="raw">
+                                <pre id="rawContent2"></pre>
+                            </div>
+                        </div>
+                        <div class="version-column" id="version3Column" style="display: none;">
+                            <h3 id="version3Title">Version 3</h3>
+                            <div class="tab-content active" data-tab="insights">
+                                <div id="insightsContent3"></div>
+                            </div>
+                            <div class="tab-content" data-tab="raw">
+                                <pre id="rawContent3"></pre>
+                            </div>
+                        </div>
+                        <!-- Delta Analysis - Full Width -->
+                        <div class="tab-content full-width" data-tab="delta">
+                            <div id="deltaContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="test-suite.js"></script>
+</body>
+</html>

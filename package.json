@@ -1,0 +1,40 @@
+{
+  "name": "topic-tree-query-interface",
+  "version": "1.0.0",
+  "description": "A web-based interface for querying and analyzing topic tree data from Cere Network endpoints",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python3 -m http.server 8000",
+    "dev": "live-server --port=8000 --open=index.html",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "cere-network",
+    "topic-tree",
+    "data-analysis",
+    "web-interface",
+    "semantic-analysis"
+  ],
+  "author": "Topic Tree Interface Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cere-io/topic-tree-interface"
+  },
+  "bugs": {
+    "url": "https://github.com/cere-io/topic-tree-interface/issues"
+  },
+  "homepage": "https://github.com/cere-io/topic-tree-interface#readme",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

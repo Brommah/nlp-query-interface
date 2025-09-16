@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="results"></div>
+
+    <script>
+        async function testAPI() {
+            const url = 'https://compute-1.testnet.cere.network/engine/data-service/2606/query/get_topic_tree_versions_by_channel';
+            const payload = { params: { channelId: 2148778849 } };
+            
+            try {
+                console.log('Testing API...');
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data);
+                
+                const versions = data.result?.result?.data?.versions || [];
+                document.getElementById('results').innerHTML = `
+                    <h2>Success!</h2>
+                    <p>Found ${versions.length} versions</p>
+                    <pre>${JSON.stringify(versions[0], null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<h2>Error:</h2><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
