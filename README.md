@@ -1,12 +1,12 @@
 # NLP Query Interface
 
-A web-based interface for querying and analyzing topic tree data from CEF.AI endpoints. This system processes conversation data to extract insights about user discussions, topic evolution, and community engagement patterns using local semantic analysis.
+A web-based interface for querying and analyzing tree data from CEF.AI endpoints. This system processes conversation data to extract insights about user discussions, topic evolution, and community engagement patterns using local semantic analysis.
 
 ## Features
 
 ### Core Functionality
 
-**Multiple Datasets**: Analyze conversation data from different topics (e.g., Test, Aethir, AAVE).
+**Multiple Datasets**: Analyze conversation data from different topics (e.g., Demo, Aethir, AAVE).
 
 **Multi-Version Analysis**: Compare up to three data versions side-by-side to track topic evolution.
 
@@ -24,7 +24,7 @@ A web-based interface for querying and analyzing topic tree data from CEF.AI end
 
 ### User Interface
 
-**Guided Workflow**: A 5-step stepper guides the user through the query process (Topic → Versions → Users → Query → Custom).
+**Guided Workflow**: A 5-step stepper guides the user through the query process (Dataset → Versions → Users → Query → Custom).
 
 **Organized Results**: Analysis is presented in dedicated tabs for processed insights, raw API responses, and version comparison deltas.
 
@@ -38,7 +38,7 @@ A web-based interface for querying and analyzing topic tree data from CEF.AI end
 
 ## Semantic Query Types
 
-**Topic Insights** (`channel_query`): Identifies the main topics of discussion within the dataset.
+**Dataset Overview** (`channel_query`): Identifies the main topics of discussion within the dataset.
 
 **Single User Analysis** (`user_analysis`): Provides a detailed analysis of an individual user's activity and behavior.
 
@@ -92,7 +92,7 @@ A web-based interface for querying and analyzing topic tree data from CEF.AI end
 
 Follow the five-step workflow to generate an analysis:
 
-1. **Topic Insights**: Select the conversation dataset to analyze.
+1. **Dataset**: Select the conversation dataset to analyze.
 
 2. **Versions**: Choose up to three versions for comparison.
 

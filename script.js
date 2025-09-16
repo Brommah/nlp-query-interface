@@ -12,8 +12,8 @@ class TopicTreeInterface {
         this.openaiEnabled = !!this.openaiApiKey;
         this.datasets = {
             '2148778849': {
-                name: 'Test Dataset',
-                description: 'Test dataset for development and validation',
+                name: 'Demo Dataset',
+                description: 'Demo dataset for development and validation',
                 github: 'https://github.com/cere-io/nlp-datasets/blob/main/test_transcript.json'
             },
             '2148778850': {
@@ -34,7 +34,7 @@ class TopicTreeInterface {
             'users_analysis': 'Compare these users\' behavior',
             'time_window': 'What topics were active in this time period?',
             'version_evolution': 'How did topics change between versions?',
-            'custom_query': 'Ask a custom question about the topic tree data'
+            'custom_query': 'Ask a custom question about the tree data'
         };
 
         // Topic names will be extracted dynamically from tree data
