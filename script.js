@@ -11,6 +11,11 @@ class TopicTreeInterface {
         this.openaiApiKey = this.initializeOpenAI();
         this.openaiEnabled = !!this.openaiApiKey;
         this.datasets = {
+            '-1001864946846': {
+                name: 'Cere Network',
+                description: 'Cere Network official channel discussions and community updates',
+                github: 'https://github.com/cere-io/nlp-datasets/blob/main/cere_network_transcript.json'
+            },
             '2148778849': {
                 name: 'Demo Dataset',
                 description: 'Demo dataset for development and validation',
@@ -28,12 +33,8 @@ class TopicTreeInterface {
             }
         };
 
+        // Simplified to only support custom queries
         this.queryTypes = {
-            'channel_query': 'What topics have users been talking about?',
-            'user_analysis': 'Tell me about user X',
-            'users_analysis': 'Compare these users\' behavior',
-            'time_window': 'What topics were active in this time period?',
-            'version_evolution': 'How did topics change between versions?',
             'custom_query': 'Ask a custom question about the tree data'
         };
 
@@ -44,11 +45,11 @@ class TopicTreeInterface {
         this.selectedChannel = null;
         this.selectedVersions = [null, null, null]; // Support up to 3 versions
         this.availableVersions = [];
-        this.availableUsers = [];
         this.resultsCache = [null, null, null]; // Cache results for each version
 
         this.initializeEventListeners();
         this.initializeStepper();
+        this.initializeDefaultDataset();
     }
 
     initializeOpenAI() {
@@ -60,6 +61,20 @@ class TopicTreeInterface {
     initializeStepper() {
         // Initialize stepper state
         this.updateStepperState();
+    }
+
+    initializeDefaultDataset() {
+        // Check if a dataset is pre-selected and automatically load it
+        const channelSelect = document.getElementById('channelSelect');
+        const selectedValue = channelSelect.value;
+        
+        if (selectedValue) {
+            console.log('🚀 Auto-loading pre-selected dataset:', selectedValue);
+            // Delay slightly to ensure DOM is fully ready
+            setTimeout(() => {
+                this.handleDatasetChange(selectedValue);
+            }, 100);
+        }
     }
 
     updateStepperState() {
@@ -80,7 +95,7 @@ class TopicTreeInterface {
             if (stepLines[0]) stepLines[0].classList.remove('completed');
         }
         
-        // Step 3: Users (active when versions loaded)
+        // Step 3: Query (active when versions loaded)
         const step3 = steps[2];
         if (this.availableVersions.length > 0) {
             step3.classList.add('completed');
@@ -88,23 +103,6 @@ class TopicTreeInterface {
         } else {
             step3.classList.remove('completed');
             if (stepLines[1]) stepLines[1].classList.remove('completed');
-        }
-        
-        // Step 4: Query (active when at least one version selected)
-        const step4 = steps[3];
-        if (this.selectedVersions[0]) {
-            step4.classList.add('completed');
-            if (stepLines[2]) stepLines[2].classList.add('completed');
-        } else {
-            step4.classList.remove('completed');
-            if (stepLines[2]) stepLines[2].classList.remove('completed');
-        }
-        
-        // Step 5: Custom (always available)
-        const step5 = steps[4];
-        if (step5) {
-            step5.classList.add('completed');
-            if (stepLines[3]) stepLines[3].classList.add('completed');
         }
     }
 
@@ -133,11 +131,7 @@ class TopicTreeInterface {
             this.updateStepperState();
         });
 
-        // Query type selection
-        document.getElementById('queryTypeSelect').addEventListener('change', (e) => {
-            this.updateQueryDescription(e.target.value);
-            this.handleQueryTypeChange(e.target.value);
-        });
+        // Query type is always custom_query now, no selection needed
 
 
         // Execute query with scroll
@@ -180,9 +174,7 @@ class TopicTreeInterface {
             });
         });
 
-        // Initialize query description for custom query (default)
-        this.updateQueryDescription('custom_query');
-        this.handleQueryTypeChange('custom_query'); // Show custom query card by default
+        // Always using custom query mode
     }
 
     async handleDatasetChange(channelId) {
@@ -270,9 +262,6 @@ class TopicTreeInterface {
                 version1Select.disabled = false;
                 version2Select.disabled = false;
                 version3Select.disabled = false;
-                
-                // Load users for the selected version
-                await this.loadUsers();
             }
         } catch (error) {
             console.error('Error loading versions:', error);
@@ -305,114 +294,7 @@ class TopicTreeInterface {
         });
     }
 
-    async loadUsers() {
-        const userSelect = document.getElementById('userSelect');
-        
-        try {
-            // Load the basic tree to extract available users (no version needed)
-            console.log('🔍 Loading users for channel:', this.selectedChannel);
-            
-            const response = await this.apiCall('get_topic_tree_by_channel', {
-                channelId: parseInt(this.selectedChannel)
-            });
-
-            console.log('👥 User loading response:', response);
-
-            if (response && response.tree && response.tree.messages) {
-                // Extract unique users from messages object
-                const users = new Map();
-                Object.values(response.tree.messages).forEach(message => {
-                    if (message.fromUserId && message.fromUserName) {
-                        users.set(message.fromUserId, message.fromUserName);
-                    }
-                });
-
-                this.availableUsers = Array.from(users, ([userId, username]) => ({
-                    userId,
-                    username
-                }));
-
-                console.log('👥 Found users:', this.availableUsers);
-
-                // Populate user checkboxes
-                const userCheckboxes = document.getElementById('userCheckboxes');
-                userCheckboxes.innerHTML = `
-                    <label class="user-checkbox">
-                        <input type="checkbox" value="" checked id="allUsersCheckbox">
-                        <span class="checkbox-label">All Users</span>
-                    </label>
-                `;
-                
-                this.availableUsers.forEach(user => {
-                    userCheckboxes.innerHTML += `
-                        <label class="user-checkbox">
-                            <input type="checkbox" value="${user.userId}" class="user-filter-checkbox">
-                            <span class="checkbox-label">@${user.username}</span>
-                        </label>
-                    `;
-                });
-
-                // Add checkbox event listeners
-                this.setupUserCheckboxListeners();
-            }
-        } catch (error) {
-            console.error('Error loading users:', error);
-            // Don't show error for user loading as it's not critical
-        }
-    }
-
-    setupUserCheckboxListeners() {
-        const allUsersCheckbox = document.getElementById('allUsersCheckbox');
-        const userCheckboxes = document.querySelectorAll('.user-filter-checkbox');
-
-        // Handle "All Users" checkbox
-        allUsersCheckbox.addEventListener('change', (e) => {
-            const isChecked = e.target.checked;
-            userCheckboxes.forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.disabled = isChecked;
-            });
-        });
-
-        // Handle individual user checkboxes
-        userCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    allUsersCheckbox.checked = false;
-                }
-                
-                // If no individual users selected, check "All Users"
-                const anyChecked = Array.from(userCheckboxes).some(cb => cb.checked);
-                if (!anyChecked) {
-                    allUsersCheckbox.checked = true;
-                    userCheckboxes.forEach(cb => cb.disabled = true);
-                }
-            });
-        });
-    }
-
-
-    updateQueryDescription(queryType) {
-        const description = this.queryTypes[queryType] || '';
-        document.getElementById('queryDescription').textContent = description;
-    }
-
-    handleQueryTypeChange(queryType) {
-        const customQueryCard = document.getElementById('customQueryCard');
-        const horizontalInputs = document.querySelector('.horizontal-inputs');
-        
-        if (queryType === 'custom_query') {
-            // Show custom query card and adjust grid to 5 columns
-            customQueryCard.style.display = 'block';
-            horizontalInputs.style.gridTemplateColumns = 'repeat(5, 1fr)';
-            console.log('✅ Custom query card shown');
-        } else {
-            // Hide custom query card and adjust grid to 4 columns
-            customQueryCard.style.display = 'none';
-            horizontalInputs.style.gridTemplateColumns = 'repeat(4, 1fr)';
-            console.log('✅ Custom query card hidden');
-        }
-    }
+    // User loading and query type methods removed - simplified interface
 
     validateForm() {
         const executeBtn = document.getElementById('executeQuery');
@@ -442,31 +324,19 @@ class TopicTreeInterface {
     }
 
     buildQueryData() {
-        const queryType = document.getElementById('queryTypeSelect').value;
-        
-        // Get selected users from checkboxes
-        const allUsersChecked = document.getElementById('allUsersCheckbox')?.checked;
-        const selectedUsers = allUsersChecked ? [] : 
-            Array.from(document.querySelectorAll('.user-filter-checkbox:checked'))
-                .map(checkbox => checkbox.value);
-
         const selectedVersions = this.selectedVersions.filter(v => v !== null);
-
-        // Get custom query if selected
-        const customQuery = queryType === 'custom_query' ? 
-            document.getElementById('customQuery')?.value?.trim() : '';
+        const customQuery = document.getElementById('customQuery')?.value?.trim() || '';
 
         console.log('📋 Building query data:', {
-            type: queryType,
+            type: 'custom_query',
             customQuestion: customQuery,
-            users: selectedUsers,
             versions: selectedVersions
         });
 
         return {
-            type: queryType,
+            type: 'custom_query',
             dataset: this.selectedChannel,
-            users: selectedUsers,
+            users: [], // No user filtering in simplified interface
             versions: selectedVersions,
             customQuestion: customQuery,
             parameters: {},
@@ -1790,7 +1660,6 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
         this.selectedChannel = null;
         this.selectedVersions = [null, null, null];
         this.availableVersions = [];
-        this.availableUsers = [];
         this.resultsCache = [null, null, null];
 
         // Reset form elements
@@ -1807,15 +1676,6 @@ Response format: Provide a single, comprehensive paragraph (maximum 150 words) t
         document.getElementById('version1Select').innerHTML = '<option value="">-- Select Dataset First --</option>';
         document.getElementById('version2Select').innerHTML = '<option value="">-- No Comparison --</option>';
         document.getElementById('version3Select').innerHTML = '<option value="">-- No Comparison --</option>';
-        
-        // Reset user checkboxes
-        const userCheckboxes = document.getElementById('userCheckboxes');
-        userCheckboxes.innerHTML = `
-            <label class="user-checkbox">
-                <input type="checkbox" value="" checked disabled>
-                <span class="checkbox-label">All Users</span>
-            </label>
-        `;
         
         // Reset stepper
         this.updateStepperState();
